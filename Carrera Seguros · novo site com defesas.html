@@ -1,0 +1,1807 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carrera Seguros · novo site com defesas</title>
+<style>
+/* Skip artifact shell — fixed styles served beside every artifact.
+   Tokens, utilities and components (basecoat 1.0 markup, no CDN); artifacts
+   override --accent for their own identity. */
+:root {
+  color-scheme: light dark;
+  --accent: #2563eb;
+  --accent-contrast: #ffffff;
+  --accent-text: color-mix(in srgb, var(--accent) 72%, #000);
+  --bg: #f8f9fb;
+  --surface: #ffffff;
+  --text: #14171f;
+  --text-muted: #5b6472;
+  --border: rgba(20, 23, 31, 0.10);
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(20, 23, 31, 0.08);
+  --space: 16px;
+  --success: #0a7a35;
+  --danger: #c0262d;
+  --warning: #8a5300;
+}
+/* Theme resolution. Without data-theme the viewer's system preference decides,
+   as it always did. With it, the artifact's own choice wins in BOTH directions:
+   a page that hardcodes one palette must not be handed the opposite set of
+   tokens by the machine it happens to be opened on. The dark values appear
+   twice because a media query cannot be folded into a selector list.
+   The attribute sits inside :where() so these blocks keep the specificity of a
+   bare :root — the page's own <style> is linked after this file and must go on
+   overriding any token it wants, exactly as it could before. */
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    --accent-text: color-mix(in srgb, var(--accent) 78%, #fff);
+    --bg: #101318;
+    --surface: #181c23;
+    --text: #eef1f6;
+    --text-muted: #9aa4b2;
+    --border: rgba(238, 241, 246, 0.12);
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --success: #4ade80;
+    --danger: #f87171;
+    --warning: #fbbf24;
+  }
+}
+:root:where([data-theme="dark"]) {
+  color-scheme: dark;
+  --accent-text: color-mix(in srgb, var(--accent) 78%, #fff);
+  --bg: #101318;
+  --surface: #181c23;
+  --text: #eef1f6;
+  --text-muted: #9aa4b2;
+  --border: rgba(238, 241, 246, 0.12);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --success: #4ade80;
+  --danger: #f87171;
+  --warning: #fbbf24;
+}
+:root:where([data-theme="light"]) { color-scheme: light; }
+/* Pages generated before the shell had its own components still link the
+   basecoat CDN, which reads its own tokens and switches theme only on a
+   .dark class. Bridged to the shell's, whatever of it those pages use takes
+   the page's accent and follows the declared theme. Its --accent token is a
+   hover tint, renamed in its theme as --color-accent; the shell's --accent is
+   the brand colour, so the tint is derived from it here. */
+:root {
+  --background: var(--bg);
+  --foreground: var(--text);
+  --card: var(--surface);
+  --card-foreground: var(--text);
+  --popover: var(--surface);
+  --popover-foreground: var(--text);
+  --primary: var(--accent);
+  --primary-foreground: var(--accent-contrast);
+  --secondary: color-mix(in srgb, var(--text) 7%, var(--surface));
+  --secondary-foreground: var(--text);
+  --muted: color-mix(in srgb, var(--text) 5%, var(--surface));
+  --muted-foreground: var(--text-muted);
+  --color-accent: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  --color-accent-foreground: var(--text);
+  --destructive: var(--danger);
+  --input: var(--border);
+  --ring: var(--accent);
+}
+* { box-sizing: border-box; }
+/* The reset the pages were written against: they all linked basecoat, which
+   ships Tailwind's. Its components now live here, so the reset does too. */
+*, ::before, ::after, ::backdrop { margin: 0; padding: 0; border: 0 solid; }
+/* Preflight's rule too: without it a component class that sets display
+   (.alert, .card, .btn…) beats the hidden attribute and shows the element. */
+[hidden]:where(:not([hidden="until-found"])) { display: none !important; }
+.hidden { display: none !important; }
+h1, h2, h3, h4, h5, h6 { font-size: inherit; font-weight: inherit; }
+a { color: inherit; text-decoration: inherit; }
+b, strong { font-weight: bolder; }
+ol, ul, menu { list-style: none; }
+svg, video, canvas, iframe { display: block; vertical-align: middle; }
+button, input, select, textarea { color: inherit; background-color: transparent; border-radius: 0; }
+table { border-collapse: collapse; }
+hr { height: 0; color: inherit; border-top-width: 1px; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+
+.shell-container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+.shell-section { padding: calc(var(--space) * 2) 0; }
+.shell-grid { display: grid; gap: var(--space); grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.shell-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: var(--space); }
+.shell-footer { padding: 24px 0 40px; color: var(--text-muted); font-size: 13px; }
+
+.shell-hero { padding: calc(var(--space) * 3) 0 calc(var(--space) * 2); }
+.shell-hero h1 { font-size: clamp(26px, 4vw, 40px); line-height: 1.15; margin: 0 0 10px; text-wrap: balance; }
+.shell-hero p { color: var(--text-muted); max-width: 60ch; margin: 0; }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--space);
+}
+
+.kpi { display: flex; flex-direction: column; gap: 4px; }
+.kpi .kpi-value { font-size: clamp(22px, 2.3vw, 28px); font-weight: 650; line-height: 1.1; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.kpi .kpi-label { font-size: 13px; color: var(--text-muted); }
+.kpi .kpi-delta { font-size: 12.5px; font-weight: 600; }
+.kpi .kpi-delta.up { color: var(--success); }
+.kpi .kpi-delta.down { color: var(--danger); }
+
+table.shell-table { border-collapse: collapse; width: 100%; font-size: 14px; }
+table.shell-table th {
+  text-align: left; font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--text-muted); font-weight: 600;
+}
+table.shell-table th, table.shell-table td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--border); }
+table.shell-table td.num, table.shell-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+
+.chart-box { width: 100%; min-height: 220px; }
+.chart-box svg { width: 100%; height: auto; display: block; }
+.chart-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 16px; margin-top: 12px; font-size: 12.5px; color: var(--text-muted); }
+.chart-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.chart-legend i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.chart-legend b { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.muted { color: var(--text-muted); }
+.accent { color: var(--accent-text); }
+.shell-badge, .eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent-text);
+}
+/* A pill keeps its content width inside flex and grid columns, which would
+   otherwise stretch it across the card; a centred parent still centres it. */
+.shell-badge, .eyebrow, .badge { width: fit-content; max-width: 100%; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .shell-fade { animation: shell-fade 400ms ease both; }
+  @keyframes shell-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+}
+
+/* Layout and type utilities: what the pages kept spelling in style="".
+   Spacing and type sizes follow Tailwind's scale; there is no Tailwind. */
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.stack { display: flex; flex-direction: column; gap: var(--space); }
+.between { justify-content: space-between; }
+.grow { flex: 1 1 0; min-width: 0; }
+.cols-2, .cols-3, .cols-4, .cols-5 { display: grid; gap: var(--space); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 720px) {
+  .cols-2, .cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .cols-5 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 1000px) { .cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.gap-1 { gap: 4px; } .gap-2 { gap: 8px; } .gap-3 { gap: 12px; } .gap-4 { gap: 16px; } .gap-6 { gap: 24px; }
+.m-0 { margin: 0; }
+.mt-1 { margin-top: 4px; } .mt-2 { margin-top: 8px; } .mt-3 { margin-top: 12px; } .mt-4 { margin-top: 16px; } .mt-6 { margin-top: 24px; }
+.mb-1 { margin-bottom: 4px; } .mb-2 { margin-bottom: 8px; } .mb-3 { margin-bottom: 12px; } .mb-4 { margin-bottom: 16px; } .mb-6 { margin-bottom: 24px; }
+.p-2 { padding: 8px; } .p-3 { padding: 12px; } .p-4 { padding: 16px; } .p-6 { padding: 24px; }
+.text-xs { font-size: 12px; } .text-sm { font-size: 14px; } .text-base { font-size: 16px; }
+.text-lg { font-size: 18px; } .text-xl { font-size: 20px; line-height: 1.35; }
+.text-2xl { font-size: 24px; line-height: 1.25; } .text-3xl { font-size: 30px; line-height: 1.2; }
+.font-medium { font-weight: 500; } .font-semibold { font-weight: 600; } .font-bold { font-weight: 700; }
+.text-right { text-align: right; } .text-center { text-align: center; }
+.nowrap { white-space: nowrap; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-variant-numeric: tabular-nums; }
+.w-full { width: 100%; }
+.text-success { color: var(--success); } .text-danger { color: var(--danger); } .text-warning { color: var(--warning); }
+
+/* Components, with basecoat 1.0 markup (variants and sizes are data
+   attributes) and the shell tokens, so a page needs neither component CSS
+   nor a CSS framework. An older page that also links basecoat gets these
+   rules after it, over the same properties. */
+button, input, select, textarea { font: inherit; }
+input[type="checkbox"], input[type="radio"] { accent-color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  height: 36px; padding: 0 14px; border: 1px solid transparent; border-radius: calc(var(--radius) - 2px);
+  background: var(--accent); color: var(--accent-contrast);
+  font-size: 14px; font-weight: 500; line-height: 1; white-space: nowrap; text-decoration: none; cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+.btn:hover { background: color-mix(in srgb, var(--accent) 86%, #000); }
+.btn:disabled, .btn[aria-disabled="true"] { opacity: 0.5; pointer-events: none; }
+.btn[data-variant="secondary"] { background: color-mix(in srgb, var(--text) 8%, var(--surface)); color: var(--text); }
+.btn[data-variant="secondary"]:hover { background: color-mix(in srgb, var(--text) 14%, var(--surface)); }
+.btn[data-variant="outline"] { background: var(--surface); color: var(--text); border-color: var(--border); }
+.btn[data-variant="ghost"] { background: transparent; color: var(--text); }
+.btn[data-variant="outline"]:hover, .btn[data-variant="ghost"]:hover { background: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
+.btn[data-variant="destructive"] { background: var(--danger); color: var(--bg); }
+.btn[data-variant="destructive"]:hover { background: color-mix(in srgb, var(--danger) 86%, var(--text)); }
+.btn[data-variant="link"] { height: auto; padding: 0; background: none; color: var(--accent-text); text-decoration: underline; text-underline-offset: 3px; }
+.btn[data-size="sm"] { height: 30px; padding: 0 10px; font-size: 13px; }
+.btn[data-size="lg"] { height: 42px; padding: 0 20px; font-size: 15px; }
+.btn[data-size="icon"] { width: 36px; padding: 0; }
+
+.badge {
+  display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px;
+  border: 1px solid transparent; border-radius: 999px; background: var(--accent); color: var(--accent-contrast);
+  font-size: 12px; font-weight: 600; line-height: 1.5; white-space: nowrap;
+}
+.badge[data-variant="secondary"] { background: color-mix(in srgb, var(--text) 8%, var(--surface)); color: var(--text); }
+.badge[data-variant="outline"] { background: transparent; color: var(--text); border-color: var(--border); }
+.badge[data-variant="destructive"] { background: color-mix(in srgb, var(--danger) 14%, var(--surface)); color: var(--danger); }
+
+.alert {
+  display: grid; gap: 4px; padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--surface); color: var(--text); font-size: 14px;
+}
+.alert h2, .alert h3 { margin: 0; font-size: 14px; font-weight: 600; }
+.alert p, .alert section { margin: 0; color: var(--text-muted); }
+.alert[data-variant="destructive"] { border-color: color-mix(in srgb, var(--danger) 45%, var(--border)); background: color-mix(in srgb, var(--danger) 7%, var(--surface)); color: var(--danger); }
+
+.card {
+  display: flex; flex-direction: column; gap: 16px; padding: 20px 0;
+  border: 1px solid var(--border); border-radius: calc(var(--radius) + 2px);
+  background: var(--surface); color: var(--text); box-shadow: var(--shadow);
+}
+.card > header, .card > section, .card > footer { padding: 0 20px; }
+.card > header { display: grid; gap: 4px; }
+.card > header h2, .card > header h3 { margin: 0; font-size: 16px; font-weight: 600; line-height: 1.3; }
+.card > header p { margin: 0; color: var(--text-muted); font-size: 14px; }
+.card > footer { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+
+.input {
+  width: 100%; min-height: 36px; padding: 6px 12px; border: 1px solid var(--border); border-radius: calc(var(--radius) - 2px);
+  background: var(--surface); color: var(--text); font-size: 14px;
+}
+textarea.input { min-height: 84px; resize: vertical; }
+.input::placeholder { color: var(--text-muted); }
+.input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent); }
+.field { display: grid; gap: 6px; }
+.field label { font-size: 14px; font-weight: 500; }
+.field [role="alert"] { color: var(--danger); font-size: 13px; }
+
+dialog.dialog {
+  width: min(520px, calc(100vw - 32px)); max-height: calc(100vh - 32px); margin: auto; padding: 0;
+  border: 1px solid var(--border); border-radius: calc(var(--radius) + 4px);
+  background: var(--surface); color: var(--text); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+dialog.dialog::backdrop { background: rgba(0, 0, 0, 0.5); }
+dialog.dialog > div { display: grid; gap: 16px; padding: 24px; }
+dialog.dialog header { display: grid; gap: 4px; }
+dialog.dialog header h2 { margin: 0; font-size: 18px; font-weight: 600; }
+dialog.dialog header p { margin: 0; color: var(--text-muted); font-size: 14px; }
+dialog.dialog footer { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+
+.tabs { display: grid; gap: 12px; }
+.tabs > [role="tablist"] {
+  display: inline-flex; gap: 4px; width: fit-content; max-width: 100%; padding: 4px; overflow-x: auto;
+  border-radius: var(--radius); background: color-mix(in srgb, var(--text) 6%, var(--surface));
+}
+.tabs [role="tab"] {
+  padding: 6px 12px; border: 0; border-radius: calc(var(--radius) - 4px); background: transparent;
+  color: var(--text-muted); font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer;
+}
+.tabs [role="tab"][aria-selected="true"] { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+.tabs [role="tabpanel"][hidden] { display: none; }
+
+.accordion > details { border-bottom: 1px solid var(--border); }
+.accordion > details > summary {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 14px 0; font-weight: 500; list-style: none; cursor: pointer;
+}
+.accordion > details > summary::-webkit-details-marker { display: none; }
+.accordion > details > summary::after { content: "+"; color: var(--text-muted); font-size: 18px; line-height: 1; }
+.accordion > details[open] > summary::after { content: "\2212"; }
+.accordion > details > :not(summary) { margin: 0 0 14px; color: var(--text-muted); }
+
+.toaster {
+  position: fixed; right: 16px; bottom: 16px; z-index: 50; display: flex; flex-direction: column-reverse; gap: 8px;
+  width: min(360px, calc(100vw - 32px)); pointer-events: none;
+}
+.toaster .toast { pointer-events: auto; transition: opacity 200ms ease, transform 200ms ease; }
+.toaster .toast[aria-hidden="true"] { opacity: 0; transform: translateY(8px); }
+.toaster .toast-content {
+  padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--surface); color: var(--text); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12); font-size: 13px;
+}
+.toaster .toast-content h2 { margin: 0 0 2px; font-size: 14px; font-weight: 600; }
+.toaster .toast-content p { margin: 0; color: var(--text-muted); }
+
+/* skipUI building blocks. */
+.skip-table-search { max-width: 320px; margin-bottom: 12px; }
+.skip-table-wrap { overflow-x: auto; }
+table.shell-table th[data-sort] { cursor: pointer; user-select: none; }
+table.shell-table th[aria-sort="ascending"]::after { content: " \25B2"; font-size: 9px; }
+table.shell-table th[aria-sort="descending"]::after { content: " \25BC"; font-size: 9px; }
+table.shell-table td.skip-table-empty { color: var(--text-muted); text-align: center; padding: 24px 0; }
+.skip-pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; font-size: 13px; color: var(--text-muted); }
+.toaster .toast[data-type="success"] .toast-content { border-left: 3px solid var(--success); }
+.toaster .toast[data-type="error"] .toast-content { border-left: 3px solid var(--danger); }
+
+</style>
+<script>
+/* Skip artifact shell — fixed helpers served beside every artifact. */
+(function () {
+  "use strict";
+
+  var fmt = {
+    num: function (v, opts) { return new Intl.NumberFormat("pt-BR", opts || {}).format(v); },
+    brl: function (v) { return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v); },
+    pct: function (v) { return new Intl.NumberFormat("pt-BR", { style: "percent", maximumFractionDigits: 1 }).format(v); },
+    compact: function (v) { return new Intl.NumberFormat("pt-BR", { notation: "compact", maximumFractionDigits: 1 }).format(v); },
+    brlCompact: function (v) { return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", notation: "compact", maximumFractionDigits: 1 }).format(v); }
+  };
+
+  // axisLabels formats the five y-axis ticks in the unit the chart declared
+  // (percent, BRL or plain numbers), compact so long values never clip, with
+  // the fewest decimals that still print every tick exactly (1,5 mi, not 2 mi).
+  function axisLabels(format, ticks) {
+    function at(digits) {
+      var opts = { notation: "compact", maximumFractionDigits: digits };
+      if (format === "pct") opts = { style: "percent", maximumFractionDigits: digits };
+      else if (format === "brl") opts = { style: "currency", currency: "BRL", notation: "compact", maximumFractionDigits: digits };
+      var nf = new Intl.NumberFormat("pt-BR", opts);
+      return ticks.map(function (t) { return nf.format(t); });
+    }
+    for (var digits = 0; digits < 2; digits++) {
+      if (at(digits).join("|") === at(digits + 1).join("|")) return at(digits);
+    }
+    return at(2);
+  }
+
+  // yAxisPad formats the ticks and measures the left padding they need from
+  // the longest one; drawYAxis then draws the grid and the labels.
+  function yAxisPad(format, max) {
+    var labels = axisLabels(format, [0, max / 4, max / 2, (max * 3) / 4, max]);
+    var longest = labels.reduce(function (m, l) { return Math.max(m, l.length); }, 0);
+    return { labels: labels, padL: Math.max(40, Math.round(longest * 6.2) + 14) };
+  }
+  function drawYAxis(svg, axis, W, padR, padT, plotH) {
+    for (var g = 0; g <= 4; g++) {
+      var gy = padT + plotH - (plotH * g) / 4;
+      svg.appendChild(svgEl("line", { x1: axis.padL, y1: gy, x2: W - padR, y2: gy, stroke: "currentColor", "stroke-opacity": 0.08 }));
+      var lbl = svgEl("text", { x: axis.padL - 8, y: gy + 4, "text-anchor": "end", "font-size": 10, fill: mutedColor() });
+      lbl.textContent = axis.labels[g];
+      svg.appendChild(lbl);
+    }
+  }
+
+  // xLabelStep: show every k-th category label so labels never overlap, and
+  // always the last one (counted back from the end).
+  function xLabelStep(labels, step) {
+    var longest = labels.reduce(function (m, l) { return Math.max(m, String(l).length); }, 0);
+    return Math.max(1, Math.ceil((longest * 6.4 + 8) / Math.max(step, 1)));
+  }
+  function drawXLabel(svg, text, x, y, W, edgeGuard) {
+    var anchor = "middle";
+    var half = String(text).length * 3.2;
+    if (edgeGuard && x - half < 4) anchor = "start";
+    if (edgeGuard && x + half > W - 4) anchor = "end";
+    var tx = svgEl("text", { x: x, y: y, "text-anchor": anchor, "font-size": 11, fill: mutedColor() });
+    tx.textContent = text;
+    svg.appendChild(tx);
+  }
+  // categoryLines fits a bar's category name in its slot: one line, two lines
+  // split at a space, or cut with "…". A bar without its name can't be read, so
+  // categories are never skipped; null when the slot is too narrow for that.
+  function categoryLines(text, slot) {
+    var fit = Math.floor((slot - 6) / 6.4);
+    var s = String(text);
+    if (fit < 4) return null;
+    if (s.length <= fit) return [s];
+    var cut = function (t) { return t.length <= fit ? t : t.slice(0, fit - 1).trimEnd() + "…"; };
+    var best = -1;
+    for (var i = 0; i < s.length; i++) {
+      if (s[i] === " " && (best < 0 || Math.abs(s.length / 2 - i) < Math.abs(s.length / 2 - best))) best = i;
+    }
+    if (best < 0) return [cut(s)];
+    return [cut(s.slice(0, best)), cut(s.slice(best + 1))];
+  }
+  function legend(el, items) {
+    var box = document.createElement("div");
+    box.className = "chart-legend";
+    items.forEach(function (it) {
+      var row = document.createElement("span");
+      var dot = document.createElement("i");
+      dot.style.background = it.color;
+      row.appendChild(dot);
+      row.appendChild(document.createTextNode((it.label || "") + (it.value ? " " : "")));
+      if (it.value) {
+        var v = document.createElement("b");
+        v.textContent = it.value;
+        row.appendChild(v);
+      }
+      box.appendChild(row);
+    });
+    resolve(el).appendChild(box);
+  }
+  var seriesPalette = ["#1baf7a", "#eda100", "#e34948", "#4a3aa7", "#e87ba4", "#0ea5b7"];
+
+  // format accepts a function OR one of the fmt names ("num" | "brl" | "pct").
+  // A page's function may return nothing or throw: the chart prints its
+  // number instead of taking the rest of the page script down with it.
+  function coerceFormat(spec) {
+    if (typeof spec === "function") {
+      return function (v) {
+        try {
+          var out = spec(v);
+          return out == null ? "" : String(out);
+        } catch (e) {
+          return fmt.num(v);
+        }
+      };
+    }
+    if (typeof spec === "string" && fmt[spec]) return fmt[spec];
+    return function (v) { return fmt.num(v); };
+  }
+
+  function accent() {
+    return getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#2563eb";
+  }
+  function mutedColor() {
+    return getComputedStyle(document.documentElement).getPropertyValue("--text-muted").trim() || "#5b6472";
+  }
+  function svgEl(tag, attrs) {
+    var el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (var k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+  function frame(el, w, h) {
+    var svg = svgEl("svg", { viewBox: "0 0 " + w + " " + h, role: "img" });
+    el = resolve(el);
+    el.innerHTML = "";
+    el.appendChild(svg);
+    return svg;
+  }
+
+  // maxOf guards the axis scale: empty values would give -Infinity (truthy,
+  // so "|| 1" can't catch it) and a non-positive max would flip the chart.
+  // finite reads a chart value as a number, 0 when it is not one (NaN,
+  // Infinity, a stray string), so one bad value cannot blank the axis.
+  function finite(v) {
+    var n = +v;
+    return isFinite(n) ? n : 0;
+  }
+
+  function maxOf(values) {
+    var m = values.length ? Math.max.apply(null, values.map(finite)) : 0;
+    return m > 0 ? m : 1;
+  }
+
+  // labelsFor pads or trims the category names to the n points drawn: pages
+  // pass labels and values of different lengths, and one throw here loses
+  // every section the page renders after the chart.
+  function labelsFor(cfg, n) {
+    var out = [];
+    for (var i = 0; i < n; i++) out.push(cfg.labels && cfg.labels[i] != null ? String(cfg.labels[i]) : "");
+    return out;
+  }
+
+  // niceMax rounds the scale up so the four grid steps land on round values
+  // (1, 1.5, 2, 2.5, 3, 4, 5, 6 or 8 × 10^k) and the tick labels read exactly.
+  function niceMax(max) {
+    var raw = max / 4;
+    var mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    var res = raw / mag;
+    var steps = [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10];
+    var nice = steps.filter(function (s) { return s >= res - 1e-9; })[0];
+    return nice * mag * 4;
+  }
+
+  // bar(el, {labels:[], values:[], color?, format?}) — vertical bar chart.
+  function bar(el, cfg) {
+    var W = 640, H = 280, padB = 30, padT = 12, padR = 12;
+    var max = niceMax(maxOf(cfg.values));
+    var axis = yAxisPad(cfg.format, max);
+    var svg = frame(el, W, H);
+    var n = cfg.values.length;
+    var labels = labelsFor(cfg, n);
+    var plotW = W - axis.padL - padR;
+    var step = plotW / n, bw = Math.min(step * 0.62, 64);
+    var names = labels.map(function (l) { return categoryLines(l, step); });
+    var named = names.every(Boolean);
+    if (named && names.some(function (l) { return l.length > 1; })) padB = 42;
+    var plotH = H - padT - padB;
+    var color = cfg.color || accent();
+    var f = coerceFormat(cfg.format);
+    var every = xLabelStep(labels, step);
+    drawYAxis(svg, axis, W, padR, padT, plotH);
+    cfg.values.forEach(function (v, i) {
+      var bh = Math.max(0, (finite(v) / max) * plotH);
+      var x = axis.padL + i * step + (step - bw) / 2;
+      var y = padT + plotH - bh;
+      var r = svgEl("rect", { x: x, y: y, width: bw, height: bh, rx: 4, fill: (cfg.colors && cfg.colors[i]) || color });
+      var t = svgEl("title", {});
+      t.textContent = labels[i] + ": " + f(v);
+      r.appendChild(t);
+      svg.appendChild(r);
+      if (named) {
+        names[i].forEach(function (text, li) {
+          drawXLabel(svg, text, x + bw / 2, padT + plotH + 18 + li * 13, W, false);
+        });
+      } else if ((n - 1 - i) % every === 0) {
+        drawXLabel(svg, labels[i], x + bw / 2, H - 10, W, false);
+      }
+    });
+  }
+
+  // line(el, {labels:[], values:[] | series:[{label, values, color?}], color?, format?})
+  // — one line, or several series on one scale with a legend under the chart.
+  function line(el, cfg) {
+    var W = 640, H = 280, padB = 30, padT = 12, padR = 16;
+    var series = cfg.series && cfg.series.length
+      ? cfg.series
+      : [{ label: "", values: cfg.values || [], color: cfg.color }];
+    var all = [];
+    series.forEach(function (s) { all = all.concat(s.values || []); });
+    var max = niceMax(maxOf(all));
+    var axis = yAxisPad(cfg.format, max);
+    var svg = frame(el, W, H);
+    var n = series.reduce(function (m, s) { return Math.max(m, (s.values || []).length); }, 0);
+    var labels = labelsFor(cfg, n);
+    var plotW = W - axis.padL - padR, plotH = H - padT - padB;
+    var f = coerceFormat(cfg.format);
+    drawYAxis(svg, axis, W, padR, padT, plotH);
+    var xs = labels.map(function (_, i) { return axis.padL + (n === 1 ? plotW / 2 : (plotW * i) / (n - 1)); });
+    var every = xLabelStep(labels, n > 1 ? plotW / (n - 1) : plotW);
+    labels.forEach(function (label, i) {
+      if ((n - 1 - i) % every === 0) drawXLabel(svg, label, xs[i], H - 10, W, true);
+    });
+    var colors = series.map(function (s, si) {
+      return s.color || (si === 0 ? (cfg.color || accent()) : seriesPalette[(si - 1) % seriesPalette.length]);
+    });
+    series.forEach(function (s, si) {
+      var color = colors[si];
+      var pts = (s.values || []).map(function (v, i) { return [xs[i], padT + plotH - (finite(v) / max) * plotH]; });
+      var d = pts.map(function (p, i) { return (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" ");
+      svg.appendChild(svgEl("path", { d: d, fill: "none", stroke: color, "stroke-width": 2, "stroke-linejoin": "round" }));
+      pts.forEach(function (p, i) {
+        var c = svgEl("circle", { cx: p[0], cy: p[1], r: 3.5, fill: color });
+        var t = svgEl("title", {});
+        t.textContent = (s.label ? s.label + " · " : "") + labels[i] + ": " + f(s.values[i]);
+        c.appendChild(t);
+        svg.appendChild(c);
+      });
+    });
+    if (series.length > 1) {
+      legend(el, series.map(function (s, si) { return { label: s.label, color: colors[si] }; }));
+    }
+  }
+
+  // donut(el, {labels:[], values:[], colors?, format?, center?, centerLabel?, legend?})
+  // — donut with a short total in the centre (compact, in the declared unit)
+  // and, with legend: true, the labels and shares listed under it.
+  function donut(el, cfg) {
+    var W = 320, H = 280, cx = W / 2, cy = H / 2, R = 92, r = 58;
+    var svg = frame(el, W, H);
+    // At 100% of a wide container the donut outgrows the height pages give
+    // the box and spills over the next section: keep it at its own size.
+    svg.style.maxWidth = W + "px";
+    svg.style.margin = "0 auto";
+    var values = cfg.values.map(finite);
+    var labels = labelsFor(cfg, values.length);
+    var sum = values.reduce(function (a, b) { return a + b; }, 0);
+    var total = sum || 1;
+    var palette = cfg.colors || [accent()].concat(seriesPalette);
+    // The hover keeps the full value; the centre has room for a short one.
+    var full = coerceFormat(cfg.format);
+    var short = typeof cfg.format === "function" ? full : cfg.format === "brl" ? fmt.brlCompact : fmt.compact;
+    var a0 = -Math.PI / 2;
+    values.forEach(function (v, i) {
+      var a1 = a0 + (v / total) * Math.PI * 2;
+      var large = a1 - a0 > Math.PI ? 1 : 0;
+      var p = ["M", cx + R * Math.cos(a0), cy + R * Math.sin(a0),
+        "A", R, R, 0, large, 1, cx + R * Math.cos(a1), cy + R * Math.sin(a1),
+        "L", cx + r * Math.cos(a1), cy + r * Math.sin(a1),
+        "A", r, r, 0, large, 0, cx + r * Math.cos(a0), cy + r * Math.sin(a0), "Z"].join(" ");
+      var path = svgEl("path", { d: p, fill: palette[i % palette.length] });
+      var t = svgEl("title", {});
+      t.textContent = labels[i] + ": " + full(v) + " (" + fmt.pct(v / total) + ")";
+      path.appendChild(t);
+      svg.appendChild(path);
+      a0 = a1;
+    });
+    // A share chart has no total worth printing: without its own centre text
+    // the caption alone takes the middle.
+    var text = cfg.center != null ? String(cfg.center) : (cfg.format === "pct" ? "" : short(sum));
+    if (text) {
+      var size = text.length > 9 ? 14 : text.length > 7 ? 17 : 20;
+      var center = svgEl("text", { x: cx, y: cfg.centerLabel ? cy + 1 : cy + 6, "text-anchor": "middle", "font-size": size, "font-weight": 650, fill: "currentColor" });
+      center.textContent = text;
+      svg.appendChild(center);
+    }
+    if (cfg.centerLabel) {
+      var cap = svgEl("text", { x: cx, y: text ? cy + 19 : cy + 5, "text-anchor": "middle", "font-size": 11, fill: mutedColor() });
+      cap.textContent = cfg.centerLabel;
+      svg.appendChild(cap);
+    }
+    if (cfg.legend) {
+      legend(el, labels.map(function (label, i) {
+        return { label: label, color: palette[i % palette.length], value: fmt.pct(values[i] / total) };
+      }));
+    }
+  }
+
+  // ---- Page building blocks: what dashboards and small systems kept
+  // re-implementing — a searchable sortable table, a KPI row, tabs, toasts,
+  // dialogs, saved state and mock data. Every call is opt-in, so a page that
+  // brings its own versions keeps them.
+
+  function resolve(target) {
+    return typeof target === "string" ? document.querySelector(target) : target;
+  }
+
+  function node(tag, className, text) {
+    var el = document.createElement(tag);
+    if (className) el.className = className;
+    if (text != null) el.textContent = text;
+    return el;
+  }
+
+  function isNumberColumn(col) {
+    return col.align === "right" || col.format === "num" || col.format === "brl" || col.format === "pct";
+  }
+
+  function cellText(col, row) {
+    var value = row[col.key];
+    if (value == null) return "";
+    return col.format ? coerceFormat(col.format)(value) : String(value);
+  }
+
+  function compareValues(a, b) {
+    if (typeof a === "number" && typeof b === "number") return a - b;
+    return String(a == null ? "" : a).localeCompare(String(b == null ? "" : b), "pt-BR", { numeric: true });
+  }
+
+  // table(el, {columns, rows, search?, pageSize?, empty?, onRowClick?}) — a
+  // table.shell-table with sortable headers, an optional search box and
+  // pager. A column is {key, label, format?, align?, sortable? (true),
+  // render?(value, row) returning a Node or an HTML string — the page writes
+  // its cell templates as markup}. Plain values are always set as text.
+  // Returns {setRows, rows}.
+  function table(target, cfg) {
+    var root = resolve(target);
+    var cols = cfg.columns || [];
+    var pageSize = cfg.pageSize || 0;
+    var state = { rows: (cfg.rows || []).slice(), query: "", key: null, dir: 1, page: 0 };
+    root.innerHTML = "";
+    if (cfg.search) {
+      var search = node("input", "input skip-table-search");
+      search.type = "search";
+      search.placeholder = typeof cfg.search === "string" ? cfg.search : "Buscar…";
+      search.setAttribute("aria-label", search.placeholder);
+      search.addEventListener("input", function () {
+        state.query = search.value.trim().toLowerCase();
+        state.page = 0;
+        draw();
+      });
+      root.appendChild(search);
+    }
+    var tableEl = node("table", "shell-table");
+    var headRow = node("tr");
+    var heads = cols.map(function (col) {
+      var th = node("th", isNumberColumn(col) ? "num" : "", col.label == null ? col.key : col.label);
+      th.scope = "col";
+      if (col.sortable !== false) {
+        var toggle = function () {
+          state.dir = state.key === col.key ? -state.dir : 1;
+          state.key = col.key;
+          draw();
+        };
+        th.setAttribute("data-sort", col.key);
+        th.tabIndex = 0;
+        th.addEventListener("click", toggle);
+        th.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+        });
+      }
+      headRow.appendChild(th);
+      return th;
+    });
+    var thead = node("thead");
+    var tbody = node("tbody");
+    var wrap = node("div", "skip-table-wrap");
+    var pager = node("div", "skip-pager");
+    thead.appendChild(headRow);
+    tableEl.appendChild(thead);
+    tableEl.appendChild(tbody);
+    wrap.appendChild(tableEl);
+    root.appendChild(wrap);
+    if (pageSize) root.appendChild(pager);
+
+    function visibleRows() {
+      var rows = state.rows;
+      if (state.query) {
+        rows = rows.filter(function (row) {
+          return cols.some(function (col) { return cellText(col, row).toLowerCase().indexOf(state.query) >= 0; });
+        });
+      }
+      if (state.key) {
+        var key = state.key, dir = state.dir;
+        rows = rows.slice().sort(function (a, b) { return dir * compareValues(a[key], b[key]); });
+      }
+      return rows;
+    }
+
+    function drawRow(row) {
+      var tr = node("tr");
+      cols.forEach(function (col) {
+        var td = node("td", isNumberColumn(col) ? "num" : "");
+        if (!col.render) {
+          td.textContent = cellText(col, row);
+        } else {
+          var content = col.render(row[col.key], row);
+          if (content instanceof Node) td.appendChild(content);
+          else td.innerHTML = content == null ? "" : String(content);
+        }
+        tr.appendChild(td);
+      });
+      // The row stays a row (no role) and takes focus, so a keyboard reaches
+      // the same action; keys pressed on a control inside a cell are its own.
+      if (cfg.onRowClick) {
+        tr.style.cursor = "pointer";
+        tr.tabIndex = 0;
+        tr.addEventListener("click", function () { cfg.onRowClick(row); });
+        tr.addEventListener("keydown", function (e) {
+          if (e.target !== tr || (e.key !== "Enter" && e.key !== " ")) return;
+          e.preventDefault();
+          cfg.onRowClick(row);
+        });
+      }
+      return tr;
+    }
+
+    function pagerButton(label, disabled, step) {
+      var button = node("button", "btn", label);
+      button.type = "button";
+      button.setAttribute("data-variant", "outline");
+      button.setAttribute("data-size", "sm");
+      button.disabled = disabled;
+      button.addEventListener("click", function () { state.page += step; draw(); });
+      return button;
+    }
+
+    function draw() {
+      var rows = visibleRows();
+      heads.forEach(function (th, i) {
+        if (cols[i].key === state.key) th.setAttribute("aria-sort", state.dir > 0 ? "ascending" : "descending");
+        else th.removeAttribute("aria-sort");
+      });
+      var pages = pageSize ? Math.max(1, Math.ceil(rows.length / pageSize)) : 1;
+      state.page = Math.min(state.page, pages - 1);
+      var shown = pageSize ? rows.slice(state.page * pageSize, (state.page + 1) * pageSize) : rows;
+      tbody.innerHTML = "";
+      if (!shown.length) {
+        var empty = node("td", "skip-table-empty", cfg.empty || "Nenhum registro encontrado.");
+        empty.colSpan = cols.length;
+        tbody.appendChild(node("tr")).appendChild(empty);
+      }
+      shown.forEach(function (row) { tbody.appendChild(drawRow(row)); });
+      if (!pageSize) return;
+      pager.innerHTML = "";
+      var from = rows.length ? state.page * pageSize + 1 : 0;
+      pager.appendChild(node("span", "", from + "–" + Math.min(rows.length, (state.page + 1) * pageSize) + " de " + rows.length));
+      var nav = node("div", "row gap-2");
+      nav.appendChild(pagerButton("Anterior", state.page === 0, -1));
+      nav.appendChild(pagerButton("Próxima", state.page >= pages - 1, 1));
+      pager.appendChild(nav);
+    }
+
+    draw();
+    return {
+      setRows: function (rows) { state.rows = rows.slice(); draw(); },
+      rows: visibleRows
+    };
+  }
+
+  // kpis(el, [{label, value, format?, delta?, hint?}]) — KPI cards in a
+  // responsive grid; delta is a fraction (0.12 renders as ▲ 12%).
+  function kpis(target, items) {
+    var root = resolve(target);
+    root.innerHTML = "";
+    root.classList.add("shell-grid");
+    items.forEach(function (item) {
+      var card = node("div", "panel kpi");
+      card.appendChild(node("span", "kpi-label", item.label));
+      // Large money values go compact ("R$ 27,5 mi"): the full amount does
+      // not fit a KPI card at four per row.
+      var kpiFormat = item.format === "brl" && Math.abs(item.value) >= 1e6 ? fmt.brlCompact : (item.format ? coerceFormat(item.format) : null);
+      card.appendChild(node("span", "kpi-value", kpiFormat ? kpiFormat(item.value) : String(item.value)));
+      if (typeof item.delta === "number") {
+        var up = item.delta >= 0;
+        card.appendChild(node("span", "kpi-delta " + (up ? "up" : "down"), (up ? "▲ " : "▼ ") + fmt.pct(Math.abs(item.delta))));
+      }
+      if (item.hint) card.appendChild(node("span", "kpi-label", item.hint));
+      root.appendChild(card);
+    });
+  }
+
+  // badge(text, variant?) — a .badge node for table cells and lists;
+  // variant is "secondary" | "outline" | "destructive" (default: primary).
+  function badge(text, variant) {
+    var el = node("span", "badge", text);
+    if (variant) el.setAttribute("data-variant", variant);
+    return el;
+  }
+
+  // tabs(el) — wires one .tabs block: [role=tab] buttons inside
+  // [role=tablist], each with aria-controls naming its [role=tabpanel].
+  function tabs(target) {
+    var root = resolve(target);
+    var buttons = Array.prototype.slice.call(root.querySelectorAll('[role="tab"]'));
+    function select(chosen) {
+      buttons.forEach(function (b) {
+        var on = b === chosen;
+        b.setAttribute("aria-selected", on ? "true" : "false");
+        b.tabIndex = on ? 0 : -1;
+        var panel = document.getElementById(b.getAttribute("aria-controls"));
+        if (panel) panel.hidden = !on;
+      });
+    }
+    buttons.forEach(function (b, i) {
+      b.addEventListener("click", function () { select(b); });
+      b.addEventListener("keydown", function (e) {
+        var step = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+        if (!step) return;
+        var next = buttons[(i + step + buttons.length) % buttons.length];
+        next.focus();
+        select(next);
+      });
+    });
+    select(buttons.filter(function (b) { return b.getAttribute("aria-selected") === "true"; })[0] || buttons[0]);
+  }
+
+  // toast(message, {type?: "success" | "error", title?, duration?}) — a
+  // .toast in a shared .toaster at the bottom of the page.
+  function toast(message, opts) {
+    opts = opts || {};
+    var toaster = document.querySelector(".toaster") || document.body.appendChild(node("div", "toaster"));
+    var item = node("div", "toast");
+    item.setAttribute("role", opts.type === "error" ? "alert" : "status");
+    item.setAttribute("aria-hidden", "true");
+    if (opts.type) item.setAttribute("data-type", opts.type);
+    var content = node("div", "toast-content");
+    var section = node("section");
+    if (opts.title) section.appendChild(node("h2", "", opts.title));
+    section.appendChild(node("p", "", message));
+    content.appendChild(section);
+    item.appendChild(content);
+    toaster.appendChild(item);
+    requestAnimationFrame(function () { item.setAttribute("aria-hidden", "false"); });
+    setTimeout(function () {
+      item.setAttribute("aria-hidden", "true");
+      setTimeout(function () { item.remove(); }, 400);
+    }, opts.duration || 3000);
+  }
+
+  // Dialogs are native <dialog class="dialog">: a [data-dialog-open="id"]
+  // anywhere opens one, a [data-dialog-close] inside closes it, and a click on
+  // its backdrop closes it too. Plain dialog.showModal()/close() still work.
+  document.addEventListener("click", function (e) {
+    var target = e.target;
+    if (!(target instanceof Element)) return;
+    var opener = target.closest("[data-dialog-open]");
+    if (opener) {
+      var dialog = document.getElementById(opener.getAttribute("data-dialog-open"));
+      if (dialog && dialog.showModal && !dialog.open) dialog.showModal();
+      return;
+    }
+    var closer = target.closest("[data-dialog-close]");
+    if (closer && closer.closest("dialog")) {
+      closer.closest("dialog").close();
+      return;
+    }
+    if (target.tagName === "DIALOG" && target.classList.contains("dialog") && target.open) target.close();
+  });
+
+  // store(key, fallback) — JSON state in localStorage that never throws (a
+  // private window or a full quota falls back to memory): {get, set, update}.
+  function store(key, fallback) {
+    var memory;
+    // Set while the last write did not reach localStorage: what is stored
+    // there is older than memory until a write goes through again.
+    var unsaved = false;
+    var initial = function () { return fallback === undefined ? undefined : JSON.parse(JSON.stringify(fallback)); };
+    function get() {
+      if (!unsaved) {
+        try {
+          var raw = localStorage.getItem(key);
+          if (raw != null) return JSON.parse(raw);
+        } catch (e) { /* storage unavailable: memory below */ }
+      }
+      return memory !== undefined ? memory : initial();
+    }
+    function set(value) {
+      memory = value;
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+        unsaved = false;
+      } catch (e) {
+        unsaved = true;
+      }
+      return value;
+    }
+    return { get: get, set: set, update: function (fn) { return set(fn(get())); } };
+  }
+
+  // mock — seeded random data, so a page asks for 90 days of numbers in one
+  // line instead of writing them out; the same seed gives the same data.
+  var FIRST = ["Ana", "Bruno", "Carla", "Diego", "Eduarda", "Felipe", "Gabriela", "Henrique", "Isabela", "João",
+    "Larissa", "Marcos", "Natália", "Otávio", "Paula", "Rafael", "Sofia", "Thiago", "Vanessa", "Lucas"];
+  var LAST = ["Silva", "Santos", "Oliveira", "Souza", "Pereira", "Costa", "Rodrigues", "Almeida", "Nascimento", "Lima",
+    "Araújo", "Fernandes", "Carvalho", "Gomes", "Martins", "Rocha", "Ribeiro", "Barbosa"];
+  var INITIALS = "ABCDEFGHIJLMNOPRSTV".split("");
+  var CITIES = ["São Paulo, SP", "Rio de Janeiro, RJ", "Belo Horizonte, MG", "Curitiba, PR", "Porto Alegre, RS",
+    "Salvador, BA", "Recife, PE", "Fortaleza, CE", "Brasília, DF", "Goiânia, GO", "Campinas, SP", "Florianópolis, SC",
+    "Manaus, AM", "Belém, PA", "Vitória, ES", "Natal, RN"];
+
+  function createMock(seed) {
+    var state = seed >>> 0;
+    var names = 0;
+    function random() {
+      state = (state + 0x6d2b79f5) >>> 0;
+      var t = state;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    }
+    function int(min, max) { return min + Math.floor(random() * (max - min + 1)); }
+    function pick(list) { return list[Math.floor(random() * list.length)]; }
+    var mock = {
+      seed: function (value) { state = value >>> 0; names = 0; return mock; },
+      random: random,
+      int: int,
+      float: function (min, max, decimals) {
+        var factor = Math.pow(10, decimals == null ? 2 : decimals);
+        return Math.round((min + random() * (max - min)) * factor) / factor;
+      },
+      pick: pick,
+      chance: function (p) { return random() < p; },
+      // There are 360 first/last pairs. A page that draws until the name is
+      // new (do { … } while (used.has(name))) froze the tab past them, so
+      // later draws widen the space: a second surname after 200 (6,480), a
+      // middle initial after 4,000.
+      name: function () {
+        names++;
+        var middle = names > 4000 ? pick(INITIALS) + ". " : "";
+        return pick(FIRST) + " " + middle + (names > 200 ? pick(LAST) + " " : "") + pick(LAST);
+      },
+      city: function () { return pick(CITIES); },
+      // series(n, {start, trend, noise, min, decimals}) — a walk: each value
+      // moves by trend (fraction per step) plus up to ±noise of itself.
+      series: function (n, opts) {
+        opts = opts || {};
+        var value = opts.start == null ? 100 : opts.start;
+        var factor = Math.pow(10, opts.decimals || 0);
+        var out = [];
+        for (var i = 0; i < n; i++) {
+          out.push(Math.max(opts.min == null ? 0 : opts.min, Math.round(value * factor) / factor));
+          value = value * (1 + (opts.trend || 0)) * (1 + (random() * 2 - 1) * (opts.noise == null ? 0.08 : opts.noise));
+        }
+        return out;
+      },
+      // dates(n, {end?, step?: "day" | "week" | "month"}) — ISO dates
+      // (YYYY-MM-DD), oldest first, ending at end (default: today).
+      dates: function (n, opts) {
+        opts = opts || {};
+        var end = opts.end ? new Date(opts.end) : new Date();
+        var out = [];
+        for (var i = n - 1; i >= 0; i--) {
+          var d = new Date(end.getTime());
+          if (opts.step === "month") d.setMonth(d.getMonth() - i);
+          else d.setDate(d.getDate() - i * (opts.step === "week" ? 7 : 1));
+          out.push(d.toISOString().slice(0, 10));
+        }
+        return out;
+      },
+      // rows(n, spec) — n objects; each spec value is a function(i), a list
+      // to pick from, or a constant.
+      rows: function (n, spec) {
+        var out = [];
+        for (var i = 0; i < n; i++) {
+          var row = {};
+          for (var key in spec) {
+            var value = spec[key];
+            row[key] = typeof value === "function" ? value(i) : Array.isArray(value) ? pick(value) : value;
+          }
+          out.push(row);
+        }
+        return out;
+      }
+    };
+    return mock;
+  }
+
+  window.skipShell = { fmt: fmt };
+  window.skipChart = { bar: bar, line: line, donut: donut };
+  window.skipUI = { table: table, kpis: kpis, badge: badge, tabs: tabs, toast: toast };
+  window.skipStore = store;
+  window.skipMock = createMock(20261022);
+})();
+
+</script>
+<style>
+:root{
+--brand:#0F8FC9;--brand-dark:#0A6E9E;--brand-light:#E4F3FB;--brand-glow:#7FD3F5;
+--ink:#0E1B2C;--ink-2:#33445C;--muted-ink:#6B7A90;--line:#E3E8EF;--alt:#F5F7FA;--green:#1E8E5A;
+--accent:#0F8FC9;--accent-text:#0A6E9E;--accent-contrast:#ffffff;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#fff;line-height:1.55}
+a{color:inherit}
+h1,h2,h3{margin:0;line-height:1.2}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.narrow{max-width:760px;margin:0 auto;padding:0 24px}
+.eyebrow{display:inline-block;font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--brand-dark);background:var(--brand-light);padding:6px 12px;border-radius:999px}
+.eyebrow.dark{color:var(--brand-glow);background:rgba(127,211,245,.12)}
+.sec{padding:88px 0}
+.sec.alt{background:var(--alt)}
+.sec-head{max-width:640px;margin-bottom:40px}
+.sec-head h2{font-size:clamp(26px,3.4vw,36px);margin-top:14px;letter-spacing:-.01em}
+.sec-head p{margin:12px 0 0;color:var(--ink-2);font-size:17px}
+.muted{color:var(--muted-ink)}
+.caption{font-size:13px;color:var(--muted-ink);margin-top:4px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:13px 24px;font:600 15px/1 inherit;font-family:inherit;cursor:pointer;text-decoration:none;transition:background .2s,transform .15s,box-shadow .2s}
+.btn-primary{background:var(--brand);color:#fff;box-shadow:0 6px 18px rgba(15,143,201,.28)}
+.btn-primary:hover{background:var(--brand-dark);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.55)}
+.btn-ghost:hover{background:rgba(255,255,255,.1)}
+.btn-light{background:#fff;color:var(--brand-dark)}
+.btn-light:hover{background:var(--brand-light)}
+.btn-sm{padding:9px 16px;font-size:14px}
+.btn:focus-visible,a:focus-visible,summary:focus-visible,button:focus-visible{outline:3px solid var(--brand-glow);outline-offset:2px}
+/* header */
+.site-header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.hdr{height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
+.logo-mark{width:38px;height:38px;border-radius:10px;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:800;font-size:19px}
+.logo-name{font-weight:800;font-size:17px;line-height:1}
+.logo-name small{display:block;font-size:10px;letter-spacing:.18em;font-weight:600;color:var(--muted-ink);margin-top:3px}
+.nav{display:flex;align-items:center;gap:4px}
+.nav a{font-size:14px;font-weight:500;color:var(--ink-2);text-decoration:none;padding:8px 10px;border-radius:999px;transition:color .2s,background .2s}
+.nav a:hover{color:var(--brand-dark);background:var(--alt)}
+.nav a.pill{background:var(--brand-light);color:var(--brand-dark);font-weight:600}
+.nav a.pill:hover{background:#d3ebf8}
+.hdr-right{display:flex;align-items:center;gap:10px}
+.menu-btn{display:none;background:none;border:1px solid var(--line);border-radius:999px;padding:8px 14px;font:600 14px inherit;font-family:inherit;cursor:pointer;color:var(--ink)}
+@media(max-width:1020px){.nav{display:none}.nav.open{display:flex;position:absolute;top:72px;left:0;right:0;flex-direction:column;background:#fff;padding:12px 24px 20px;border-bottom:1px solid var(--line);align-items:stretch}.menu-btn{display:inline-block}}
+@media(max-width:560px){.hdr-right .btn{display:none}}
+/* views */
+.view{display:none;padding-top:72px;animation:fadeIn .45s ease}
+.view.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* hero */
+.hero{position:relative;overflow:visible;background:linear-gradient(135deg,#0E1B2C 0%,#0E2A42 60%,#0A4D70 100%);color:#fff;padding:96px 0 104px}
+.hero::before{content:"";position:absolute;width:640px;height:640px;right:-160px;top:-200px;background:radial-gradient(circle,rgba(15,143,201,.55) 0%,rgba(15,143,201,0) 65%);pointer-events:none}
+.hero-grid{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center}
+.hero h1{font-size:clamp(34px,5vw,56px);font-weight:800;letter-spacing:-.02em;margin-top:20px}
+.hero h1 span{color:var(--brand-glow);display:block}
+.hero p.lead{font-size:18px;color:rgba(255,255,255,.82);max-width:540px;margin:20px 0 32px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px}
+.hero-note{font-size:13px;color:rgba(255,255,255,.7);margin-top:18px}
+.glass{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:28px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.glass h3{font-size:20px;margin-bottom:8px}
+.glass>p{color:rgba(255,255,255,.78);font-size:15px;margin:0 0 22px}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat{background:rgba(14,27,44,.45);border-radius:12px;padding:16px}
+.stat b{display:block;font-size:26px;font-weight:800;color:var(--brand-glow)}
+.stat small{color:rgba(255,255,255,.78);font-size:13px}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr}.hero{padding:72px 0}}
+/* trust */
+.trust{background:var(--alt);border-bottom:1px solid var(--line);padding:26px 0}
+.trust-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.trust-item{display:flex;gap:14px;align-items:center}
+.trust-ico{width:44px;height:44px;border-radius:10px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;flex-shrink:0;color:var(--brand)}
+.trust-item strong{display:block;font-size:16px}
+.trust-item span{font-size:13px;color:var(--muted-ink)}
+
+@media(max-width:720px){.trust-grid{grid-template-columns:1fr}}
+/* cards */
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+.card{position:relative;background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px;transition:transform .25s,border-color .25s,box-shadow .25s}
+.card:hover{transform:translateY(-4px);border-color:var(--brand);box-shadow:0 14px 34px rgba(14,27,44,.08)}
+.card.alt{background:#fff}
+.num{width:44px;height:44px;border-radius:12px;background:var(--brand-light);color:var(--brand-dark);display:grid;place-items:center;font-weight:800;font-size:15px}
+.card h3{font-size:20px;margin:18px 0 10px}
+.card p{color:var(--ink-2);font-size:15px;margin:0 0 18px}
+.link{color:var(--brand-dark);font-weight:600;font-size:15px;text-decoration:none;background:none;border:0;padding:0;cursor:pointer;font-family:inherit}
+.link:hover{text-decoration:underline}
+@media(max-width:900px){.grid3,.grid2{grid-template-columns:1fr}}
+@media(min-width:601px) and (max-width:900px){.grid3{grid-template-columns:1fr 1fr}}
+/* groups */
+.groups{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.group-label{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--muted-ink);margin:0 0 14px}
+.pill-item{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:12px 18px;margin-bottom:10px;text-decoration:none;color:var(--ink);transition:border-color .2s,transform .2s}
+.pill-item:hover{border-color:var(--brand);transform:translateX(3px)}
+.pill-item b{font-size:15px;display:block}
+.pill-item small{font-size:13px;color:var(--muted-ink)}
+.pill-item .arr{color:var(--brand);font-weight:700;flex-shrink:0}
+@media(max-width:900px){.groups{grid-template-columns:1fr}}
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.step{border-top:3px solid var(--brand);padding-top:20px}
+.step .n{color:var(--brand);font-weight:800;font-size:15px}
+.step h3{font-size:18px;margin:10px 0 8px}
+.step p{color:var(--ink-2);font-size:15px;margin:0}
+@media(max-width:900px){.steps{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.steps{grid-template-columns:1fr}}
+/* proof */
+.rating{display:flex;align-items:center;gap:22px;margin-bottom:36px;flex-wrap:wrap}
+.rating-big{font-size:64px;font-weight:800;color:var(--ink);line-height:1}
+.stars{color:#F5A524;font-size:22px;letter-spacing:3px}
+.testi .stars{font-size:16px;letter-spacing:2px}
+.testi p{font-size:15px;color:var(--ink-2);margin:14px 0}
+.who{display:flex;align-items:center;gap:12px}
+.av{width:42px;height:42px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:700;font-size:14px}
+.who b{display:block;font-size:15px}
+.who small{font-size:13px;color:var(--muted-ink)}
+/* group block */
+.gblock{background:var(--brand-dark);border-radius:16px;padding:56px;color:#fff;display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;background:linear-gradient(135deg,#0A6E9E,#0E1B2C)}
+.gblock h2{font-size:clamp(26px,3vw,34px);margin:14px 0 14px}
+.gblock p{color:rgba(255,255,255,.82);margin:0}
+.glines{display:flex;flex-direction:column;gap:12px}
+.gline{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:16px 20px}
+.gline b{display:block;font-size:16px}
+.gline span{font-size:14px;color:rgba(255,255,255,.78)}
+@media(max-width:860px){.gblock{grid-template-columns:1fr;padding:36px}}
+/* faq */
+.faq{max-width:720px;margin:0 auto}
+details{background:#fff;border:1px solid var(--line);border-radius:16px;margin-bottom:12px;padding:0 22px}
+details summary{list-style:none;cursor:pointer;padding:20px 0;font-weight:600;font-size:16px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:"+";color:var(--brand);font-size:22px;font-weight:700;line-height:1;transition:transform .2s}
+details[open] summary::after{content:"−"}
+details p{margin:0 0 20px;color:var(--ink-2);font-size:15px}
+/* cta */
+.cta{background:linear-gradient(135deg,#1093CE,#0A6E9E);border-radius:16px;padding:64px 48px;text-align:center;color:#fff}
+.cta h2{font-size:clamp(28px,3.6vw,40px)}
+.cta p{color:rgba(255,255,255,.9);max-width:560px;margin:14px auto 28px}
+.cta small{display:block;margin-top:18px;color:rgba(255,255,255,.75);font-size:13px}
+/* footer */
+.foot{background:#0A2A40;color:rgba(255,255,255,.82);padding:64px 0 28px;font-size:14px}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:36px}
+.foot h4{color:#fff;font-size:14px;margin:0 0 14px}
+.foot ul{list-style:none;margin:0;padding:0}
+.foot li{margin-bottom:9px}
+.foot a{text-decoration:none;color:rgba(255,255,255,.82)}
+.foot a:hover{color:var(--brand-glow)}
+.legal{border-top:1px solid rgba(255,255,255,.14);margin-top:44px;padding-top:22px;font-size:12px;color:rgba(255,255,255,.65)}
+@media(max-width:860px){.foot-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.foot-grid{grid-template-columns:1fr}}
+/* diagnostics */
+.dx-head{background:linear-gradient(180deg,var(--brand-light),#fff);padding:72px 0 56px}
+.dx-head h1{font-size:clamp(30px,4.2vw,44px);margin-top:16px;letter-spacing:-.02em}
+.dx-head p{color:var(--ink-2);max-width:680px;font-size:17px;margin:16px 0 0}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:40px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px}
+.kpi b{display:block;font-size:40px;font-weight:800;color:var(--brand-dark);line-height:1}
+.kpi span{font-size:14px;color:var(--ink-2)}
+.kpi small{display:block;font-size:12px;color:var(--muted-ink);margin-top:6px}
+.kpi.crit b{color:#B42318}
+.kpi.ok b{color:var(--green)}
+@media(max-width:860px){.kpis{grid-template-columns:1fr 1fr}}
+.fx{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.fx .card h3{margin-top:0}
+.tagline{display:inline-block;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;margin-bottom:12px}
+.t-crit{background:#FDE8E6;color:#8A1F17}
+.t-warn{background:#FEF3D6;color:#7A4B00}
+.t-ok{background:#DDF3E8;color:#14653F}
+.wrap-dx p{margin:0}
+@media(max-width:800px){.fx{grid-template-columns:1fr}}
+.closing{background:var(--ink);border-radius:16px;padding:44px;color:#fff;margin-top:40px}
+.closing h3{font-size:22px;margin-bottom:18px}
+.closing ul{margin:0 0 28px;padding:0;list-style:none}
+.closing li{padding:12px 0;border-bottom:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.88);font-size:16px}
+.closing li:last-child{border-bottom:0}
+/* lightbox */
+.lb{position:fixed;inset:0;background:rgba(10,18,30,.62);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px;z-index:300}
+.lb.open{display:flex}
+.lb-card{background:#fff;border-radius:16px;width:100%;max-width:560px;max-height:calc(100vh - 40px);overflow:auto;padding:32px;position:relative;box-shadow:0 30px 70px rgba(0,0,0,.3);animation:rise .35s ease}
+@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.lb-close{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:999px;border:0;background:var(--alt);color:var(--ink);font-size:18px;cursor:pointer}
+.lb-card h2{font-size:24px;margin:0 0 6px}
+.lb-card>p{color:var(--ink-2);font-size:14px;margin:0 0 22px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:14px;font-weight:600;margin-bottom:6px}
+.field input,.field select{width:100%;font:inherit;font-size:15px;padding:12px 14px;border:1px solid #C9D2DE;border-radius:12px;background:#fff;color:var(--ink)}
+.field input:focus,.field select:focus{outline:3px solid var(--brand-glow);border-color:var(--brand)}
+.field .help{font-size:12px;color:var(--muted-ink);margin-top:5px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--ink-2);margin:6px 0 20px}
+.check input{margin-top:3px;width:16px;height:16px;flex-shrink:0}
+.btn-full{width:100%}
+.success{text-align:center;padding:20px 0}
+.success .ring{width:76px;height:76px;border-radius:999px;background:var(--green);margin:0 auto 18px;display:grid;place-items:center;color:#fff}
+.success h3{font-size:22px;margin:0 0 10px}
+.success p{color:var(--ink-2);font-size:15px;margin:0 0 24px}
+@media(max-width:560px){.row2{grid-template-columns:1fr}.lb-card{padding:26px 22px}}
+/* defenses */
+.dmw{position:absolute;top:0;left:50%;transform:translate(-50%,-50%);width:48px;height:48px;z-index:900;display:flex;align-items:center;justify-content:center}
+.dmw::after{content:"";position:absolute;left:-24px;right:-24px;top:100%;height:12px;background:transparent}
+.dmw.is-open{z-index:900}
+.dmark{position:relative;width:36px;height:36px;border-radius:999px;background:#0F8FC9;color:#fff;font-weight:700;border:3px solid #fff;box-shadow:0 6px 18px rgba(14,27,44,.35),0 0 0 6px rgba(255,255,255,.55);display:grid;place-items:center;font-size:12px;cursor:pointer;padding:0;transition:opacity .2s,transform .2s;font-family:inherit}
+.dmark::before{content:"";position:absolute;left:50%;top:50%;width:48px;height:48px;transform:translate(-50%,-50%)}
+.dmark:hover,.dmark:focus-visible{transform:scale(1.08)}
+.dmark:focus-visible{outline:3px solid var(--brand-glow);outline-offset:2px}
+.dmw.hidden-mode{display:none}
+.sec,.hero,.trust{position:relative;overflow:visible}
+@media(max-width:899px){.dmw{width:40px;height:40px}.dmark{width:32px;height:32px;font-size:11px}}
+.dtip{position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);width:340px;max-width:min(340px,88vw);background:#fff;border-left:4px solid var(--brand);border-radius:12px;padding:16px 18px;box-shadow:0 18px 44px rgba(14,27,44,.22);opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s,transform .2s;pointer-events:none;z-index:950;font-size:14px;text-align:left}
+.dtip.is-open{opacity:1;visibility:visible;transform:translateX(-50%)}
+.dtip b{display:block;color:var(--brand-dark);font-size:15px;margin-bottom:6px}
+.dtip p{margin:0;color:var(--ink-2);line-height:1.5}
+@media(max-width:899px){.dtip{width:88vw;max-width:88vw}}
+.dock{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:200;background:rgba(14,27,44,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:999px;padding:10px 12px 10px 20px;display:flex;align-items:center;gap:14px;color:#fff;font-size:13px;box-shadow:0 14px 34px rgba(0,0,0,.25);max-width:calc(100vw - 24px);white-space:nowrap}
+.dock .lbl{font-weight:700}
+.dock .hint{color:rgba(255,255,255,.75);transition:opacity .25s}
+.dock .hint.off{opacity:0}
+.switch{position:relative;width:44px;height:24px;border-radius:999px;background:#4A5B73;border:0;cursor:pointer;padding:0;flex-shrink:0;transition:background .2s}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:999px;background:#fff;transition:transform .2s}
+.switch[aria-checked="true"]{background:var(--brand-glow)}
+.switch[aria-checked="true"]::after{transform:translateX(20px)}
+@media(max-width:700px){.dock{white-space:normal;border-radius:18px;flex-wrap:wrap;justify-content:center;width:calc(100vw - 24px);padding:12px 14px}.dock .hint{width:100%;text-align:center}}
+.dtip.mobile-open{display:block}
+.dmark:focus{outline:none}
+.dmark:focus-visible{outline:3px solid var(--brand-glow);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap hdr">
+    <a href="#" class="logo" data-go="site" aria-label="Carrera Seguros, início">
+      <span class="logo-mark">C</span>
+      <span class="logo-name">Carrera<small>SEGUROS</small></span>
+    </a>
+    <nav class="nav" id="mainNav" aria-label="Principal">
+      <a href="#seguro-auto" data-go="site" data-target="seguro-auto">Seguro Auto</a>
+      <a href="#alem" data-go="site" data-target="alem">Muito além do seguro auto</a>
+      <a href="#como" data-go="site" data-target="como">Como funciona</a>
+      <a href="#grupo" data-go="site" data-target="grupo">Grupo Carrera</a>
+      <a href="#duvidas" data-go="site" data-target="duvidas">Dúvidas</a>
+      <a href="#diagnostico" class="pill" data-go="diag">Diagnóstico</a>
+    </nav>
+    <div class="hdr-right">
+      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mainNav">Menu</button>
+      <button class="btn btn-primary btn-sm" data-open-form data-type="auto">Cotar meu seguro</button>
+    </div>
+  </div>
+</header>
+
+<!-- MODO 1: O SITE -->
+<main class="view active" id="view-site">
+  <section class="hero" id="topo">
+    <div class="dmw" data-mw><button class="dmark" data-def="01" aria-label="Defesa 01: Por que o Auto abre a página" aria-describedby="d01" aria-expanded="false">01</button><div class="dtip" role="tooltip" id="d01"><b>Por que o Auto abre a página</b><p>Seguro auto é o produto de maior volume de busca e é o que o cliente do grupo contrata logo depois de comprar o carro. Começar por ele alinha a página à intenção de quem chega e evita que o visitante tenha que procurar.</p></div></div>
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow dark">Seguro auto · 26 anos de mercado</span>
+        <h1>Escolha o seguro ideal com a <span>CARRERA SEGUROS</span></h1>
+        <p class="lead">Os melhores e mais variados seguros com comodidade, segurança e qualidade</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" data-open-form data-type="auto">Cotar meu seguro auto</button>
+          <a class="btn btn-ghost" href="#seguro-auto">Ver outros seguros</a>
+        </div>
+        <p class="hero-note">Sem compromisso e sem custo para cotar.</p>
+        <div style="margin-top:24px"></div>
+      </div>
+      <div class="dwrap">
+        <div class="glass">
+          <h3>Atendimento que resolve</h3>
+          <p>Cotação, vistoria e emissão acompanhadas por um corretor do início ao fim.</p>
+          <div class="stat-grid">
+            <div class="stat"><b>Várias</b><small>seguradoras comparadas</small></div>
+            <div class="stat"><b>24h</b><small>para receber a cotação</small></div>
+            <div class="stat"><b>26</b><small>anos de operação</small></div>
+            <div class="stat"><b>100%</b><small>atendimento humano</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="trust dwrap" aria-label="Confiança">
+    <div class="dmw" data-mw><button class="dmark" data-def="02" aria-label="Defesa 02: Por que a prova vem antes do produto" aria-describedby="d02" aria-expanded="false">02</button><div class="dtip" role="tooltip" id="d02"><b>Por que a prova vem antes do produto</b><p>Corretora vende confiança antes de vender preço. Em três segundos a pessoa precisa saber com quem está falando: tempo de mercado, seguradoras parceiras e avaliação real. É o que o site atual perdia com dados desatualizados.</p></div></div>
+    <div class="wrap">
+      <div class="trust-grid">
+        <div class="trust-item dwrap">
+          <div class="trust-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/></svg></div>
+          <div><strong>26 anos</strong><span>De mercado automotivo</span></div>
+
+        </div>
+        <div class="trust-item">
+          <div class="trust-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+          <div><strong>Várias seguradoras</strong><span>Parceiras do grupo</span></div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="#F5A524" stroke="#F5A524" stroke-width="1" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></div>
+          <div><strong>4,9 no Google</strong><span>Avaliação dos clientes</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="sec dwrap" id="seguro-auto">
+    <div class="dmw" data-mw><button class="dmark" data-def="03" aria-label="Defesa 03: Por que três perfis e não um" aria-describedby="d03" aria-expanded="false">03</button><div class="dtip" role="tooltip" id="d03"><b>Por que três perfis e não um</b><p>Passeio, utilitário e aplicativo têm cobertura, preço e risco diferentes. Separar por uso faz o visitante se reconhecer na página e abre caminho para uma URL própria por perfil, sem repetir conteúdo.</p></div></div>
+    <div class="wrap">
+
+      <div class="sec-head">
+        <span class="eyebrow">Seguro auto</span>
+        <h2>Cada carro tem uma proteção que faz sentido</h2>
+        <p>Escolha o perfil que combina com o seu uso e veja o que a apólice cobre. Se ficar em dúvida, o corretor te ajuda na cotação.</p>
+      </div>
+      <div class="grid3">
+        <article class="card">
+          <div class="num">01</div>
+          <h3>Passeio e 0km</h3>
+          <p>Proteção completa para o carro do dia a dia ou recém-saído da concessionária, com cobertura para colisão, roubo e terceiros.</p>
+          <button class="link" data-open-form data-type="auto">Cotar passeio →</button>
+        </article>
+        <article class="card">
+          <div class="num">02</div>
+          <h3>Utilitários e picapes</h3>
+          <p>Condições específicas para veículos de trabalho, com cobertura adequada ao uso comercial e à carga transportada.</p>
+          <button class="link" data-open-form data-type="utilitario">Cotar utilitário →</button>
+        </article>
+        <article class="card">
+          <div class="num">03</div>
+          <h3>Aplicativo, táxi e moto</h3>
+          <p>Seguro desenhado para quem roda por aplicativo ou transporta passageiros, com cobertura alinhada à rotina de rua.</p>
+          <button class="link" data-open-form data-type="aplicativo">Cotar meu perfil →</button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec alt dwrap" id="alem">
+    <div class="dmw" data-mw><button class="dmark" data-def="04" aria-label="Defesa 04: Por que os 16 seguros ficaram em três grupos" aria-describedby="d04" aria-expanded="false">04</button><div class="dtip" role="tooltip" id="d04"><b>Por que os 16 seguros ficaram em três grupos</b><p>O portfólio inteiro continua na página, mas organizado por contexto: veículos, pessoais e empresarial. O visitante escolhe pelo que precisa, não por uma lista. Foi assim que o auto deixou de competir de igual para igual com odonto.</p></div></div>
+    <div class="wrap">
+
+      <div class="sec-head">
+        <span class="eyebrow">Portfólio</span>
+        <h2>Muito além do seguro auto</h2>
+        <p>Segurança completa para você, sua família e sua empresa.</p>
+      </div>
+      <div class="groups">
+        <div>
+          <p class="group-label">Veículos</p>
+          <a class="pill-item" href="#" data-open-form data-type="auto"><span><b>Passeio</b><small>Carro de uso particular</small></span><span class="arr">→</span></a>
+          <a class="pill-item" href="#" data-open-form data-type="utilitario"><span><b>Utilitários</b><small>Vans e veículos de carga leve</small></span><span class="arr">→</span></a>
+          <a class="pill-item" href="#" data-open-form data-type="moto"><span><b>Moto</b><small>Proteção para duas rodas</small></span><span class="arr">→</span></a>
+          <a class="pill-item" href="#" data-open-form data-type="aplicativo"><span><b>Aplicativo</b><small>Motoristas de app e táxi</small></span><span class="arr">→</span></a>
+          <a class="pill-item" href="#" data-open-form data-type="taxi"><span><b>Táxi</b><small>Cobertura para transporte</small></span><span class="arr">→</span></a>
+          <a class="pill-item" href="#" data-open-form data-type="carga"><span><b>Carga</b><small>Transporte de mercadorias</small></span><span class="arr">→</span></a>
+        </div>
+        <div>
+          <p class="group-label">Pessoais e família</p>
+          <a class="pill-item" href="#" data-open-form data-type="vida"><span><b>Vida</b><small>Proteção para quem você ama</small></span><span class="arr">→</span></a>
+          <a class="pill-item" href="#" data-open-form data-type="residencial"><span><b>Residencial</b><small>Casa e apartamento</small></span><span class="arr">→</span></a>
+          <a class="pill-item" href="#" data-open-form data-type="saude"><span><b>Saúde</b><small>Planos individuais e familiares</small></span><span class="arr">→</span></a>
+          <a class="pill-item" href="#" data-open-form data-type="odonto"><span><b>Odonto</b><small>Saúde bucal</small></span><span class="arr">→</span></a>
+          <a class="pill-item" href="#" data-open-form data-type="pet"><span><b>PET</b><small>Consultas e emergências</small></span><span class="arr">→</span></a>
+          <a class="pill-item" href="#" data-open-form data-type="celular"><span><b>Celular</b><small>Roubo, furto e quebra</small></span><span class="arr">→</span></a>
+        </div>
+        <div>
+          <p class="group-label">Empresarial e patrimonial</p>
+          <a class="pill-item" href="#" data-open-form data-type="empresarial"><span><b>Empresarial</b><small>Patrimônio da sua empresa</small></span><span class="arr">→</span></a>
+          <a class="pill-item" href="#" data-open-form data-type="frota"><span><b>Frota</b><small>Gestão de veículos CNPJ</small></span><span class="arr">→</span></a>
+          <a class="pill-item" href="#" data-open-form data-type="viagem"><span><b>Viagem</b><small>Brasil e exterior</small></span><span class="arr">→</span></a>
+          <a class="pill-item" href="#" data-open-form data-type="eventos"><span><b>Eventos</b><small>Festas e shows</small></span><span class="arr">→</span></a>
+          <a class="pill-item" href="#" data-open-form data-type="eletronicos"><span><b>Eletrônicos</b><small>Equipamentos portáteis</small></span><span class="arr">→</span></a>
+          <a class="pill-item" href="#" data-open-form data-type="aluguel"><span><b>Aluguel</b><small>Garantia locatícia</small></span><span class="arr">→</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec dwrap" id="como">
+    <div class="dmw" data-mw><button class="dmark" data-def="05" aria-label="Defesa 05: Por que mostramos o processo" aria-describedby="d05" aria-expanded="false">05</button><div class="dtip" role="tooltip" id="d05"><b>Por que mostramos o processo</b><p>O maior medo de quem cota seguro é não saber o que acontece depois. Quatro etapas curtas eliminam a dúvida e reduzem o abandono antes do formulário.</p></div></div>
+    <div class="wrap">
+
+      <div class="sec-head">
+        <span class="eyebrow">Como funciona</span>
+        <h2>Contratar é simples. A gente te mostra.</h2>
+        <p>Quatro etapas, sem burocracia e sem precisar preencher o mesmo dado duas vezes.</p>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="n">01</div><h3>Fale com a gente</h3><p>Informe o tipo de seguro e o melhor contato. O corretor assume daí.</p></div>
+        <div class="step"><div class="n">02</div><h3>Enviamos os dados</h3><p>Passamos o básico sobre o veículo ou o imóvel. Sem pedir CPF no primeiro contato.</p></div>
+        <div class="step"><div class="n">03</div><h3>Comparamos as seguradoras</h3><p>Você recebe as opções lado a lado, com coberturas e valores.</p></div>
+        <div class="step"><div class="n">04</div><h3>Escolha e receba a apólice</h3><p>Emissão acompanhada pela equipe, com suporte nos primeiros dias.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec alt dwrap">
+    <div class="dmw" data-mw><button class="dmark" data-def="06" aria-label="Defesa 06: Por que trocamos adjetivo por fato" aria-describedby="d06" aria-expanded="false">06</button><div class="dtip" role="tooltip" id="d06"><b>Por que trocamos adjetivo por fato</b><p>Cada diferencial aparece com um número ou um prazo. 'Atendimento humanizado' não se verifica; 'cotação em até 24 horas' sim.</p></div></div>
+    <div class="wrap">
+
+      <div class="sec-head">
+        <span class="eyebrow">Diferenciais</span>
+        <h2>O que muda no atendimento</h2>
+        <p>Compromissos que você pode conferir antes de contratar.</p>
+      </div>
+      <div class="grid2">
+        <div class="card"><div class="num">24h</div><h3>Cotação em até 24 horas</h3><p>Resposta com comparativo entre as seguradoras, no mesmo dia útil.</p></div>
+        <div class="card"><div class="num">D+0</div><h3>Bem assegurado no mesmo dia</h3><p>Emissão e garantia do bem resolvidas sem semanas de espera.</p></div>
+        <div class="card"><div class="num">3</div><h3>Atendimento em três canais</h3><p>WhatsApp, telefone e e-mail, com a mesma equipe de plantão.</p></div>
+        <div class="card"><div class="num">✓</div><h3>Corretores especialistas</h3><p>Equipe técnica de seguro automotivo e de ramos elementares.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec dwrap">
+  <div class="dmw" data-mw><button class="dmark" data-def="07" aria-label="Defesa 07: Por que depoimento identificado" aria-describedby="d07" aria-expanded="false">07</button><div class="dtip" role="tooltip" id="d07"><b>Por que depoimento identificado</b><p>Nota isolada não convence. Depoimento com iniciais, tempo de casa e um detalhe concreto do atendimento vale mais do que cinco estrelas sem contexto.</p></div></div>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Prova social</span>
+        <h2>Quem contratou, recomendou</h2>
+      </div>
+      <div class="rating">
+        <div class="rating-big">4,9</div>
+        <div>
+          <div class="stars" aria-label="5 estrelas">★★★★★</div>
+          <div class="muted">no Google · mais de 700 avaliações</div>
+        </div>
+      </div>
+      <div class="grid3">
+        <div class="card testi">
+          <div class="stars">★★★★★</div>
+          <p>"Consegui a cotação no dia seguinte à primeira conversa. O corretor comparou três opções e explicou o que realmente mudava entre elas."</p>
+          <div class="who"><div class="av">RM</div><div><b>Ricardo M.</b><small>Cliente Carrera Seguros · há 11 meses</small></div></div>
+        </div>
+        <div class="card testi">
+          <div class="stars">★★★★★</div>
+          <p>"O que me convenceu foi o atendimento por WhatsApp. Mandei as fotos, resolveram a vistoria e a apólice saiu no mesmo dia."</p>
+          <div class="who"><div class="av">AS</div><div><b>Amanda S.</b><small>há 9 meses</small></div></div>
+        </div>
+        <div class="card testi">
+          <div class="stars">★★★★★</div>
+          <p>"Troquei de seguradora porque aqui alguém atende o telefone. Já precisei de sinistro e o suporte foi imediato."</p>
+          <div class="who"><div class="av">FL</div><div><b>Fernando L.</b><small>há 13 meses</small></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec alt dwrap" id="grupo">
+    <div class="dmw" data-mw><button class="dmark" data-def="10" aria-label="Defesa 10: Por que o grupo aparece por último" aria-describedby="d10" aria-expanded="false">10</button><div class="dtip" role="tooltip" id="d10"><b>Por que o grupo aparece por último</b><p>A vantagem de comprar no Grupo Carrera vale como fechamento: primeiro o visitante entende o produto e a prova, depois descobre que existe um caminho prioritário dentro do grupo.</p></div></div>
+    <div class="wrap">
+
+      <div class="gblock">
+        <div>
+          <span class="eyebrow dark">Vantagem do Grupo Carrera</span>
+          <h2>Você já compra o carro. Proteja com quem está ao lado.</h2>
+          <p>Quem compra em uma concessionária do grupo ou blinda na BLC tem um caminho prioritário para o seguro. Uma equipe só, do chassi à apólice.</p>
+        </div>
+        <div class="glines">
+          <div class="gline"><b>Concessionárias</b><span>Seguro no ato da compra</span></div>
+          <div class="gline"><b>BLC Blindados</b><span>Apólice para veículo blindado</span></div>
+          <div class="gline"><b>Carrera Empresas</b><span>Frota e patrimônio CNPJ</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec dwrap" id="duvidas">
+    <div class="dmw" data-mw><button class="dmark" data-def="08" aria-label="Defesa 08: Por que o FAQ não é enfeite" aria-describedby="d08" aria-expanded="false">08</button><div class="dtip" role="tooltip" id="d08"><b>Por que o FAQ não é enfeite</b><p>Cada pergunta responde uma objeção real que aparece antes da cotação. E, como o texto é estruturado, passa a ser o trecho que o Google e as IAs citam quando alguém pergunta sobre prazo ou sinistro.</p></div></div>
+    <div class="narrow">
+      <div class="sec-head" style="text-align:center;margin-left:auto;margin-right:auto">
+        <span class="eyebrow">Dúvidas</span>
+        <h2>Tire suas dúvidas</h2>
+      </div>
+      <div class="faq">
+        <details open><summary>Quanto tempo leva para receber a cotação?</summary><p>Em até 24 horas úteis após o contato. Você recebe o comparativo entre as seguradoras parceiras.</p></details>
+        <details><summary>Preciso informar CPF no primeiro contato?</summary><p>Não. No primeiro contato pedimos apenas nome, WhatsApp e tipo de seguro. CPF e data de nascimento entram depois, já com o corretor.</p></details>
+        <details><summary>Vocês trabalham com veículos blindados?</summary><p>Sim. A BLC Blindados integra o Grupo Carrera e a apólice é desenhada para o veículo blindado.</p></details>
+        <details><summary>Motorista de aplicativo consegue cotar?</summary><p>Consegue. Existe cobertura específica para quem roda por aplicativo ou transporta passageiros.</p></details>
+        <details><summary>Quais seguradoras vocês comparam?</summary><p>Trabalhamos com as principais do mercado. As opções variam conforme o perfil e o produto.</p></details>
+        <details><summary>Como funciona em caso de sinistro?</summary><p>Você aciona o mesmo corretor que fez sua apólice. A equipe acompanha a abertura do sinistro e a regulação junto à seguradora.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec alt dwrap">
+  <div class="dmw" data-mw><button class="dmark" data-def="09" aria-label="Defesa 09: Por que um único caminho de conversão" aria-describedby="d09" aria-expanded="false">09</button><div class="dtip" role="tooltip" id="d09"><b>Por que um único caminho de conversão</b><p>Todo botão da página leva ao mesmo formulário. A pessoa nunca precisa escolher entre caminhos diferentes para pedir uma cotação, o que reduz a chance de desistência.</p></div></div>
+  <div class="wrap">
+    <div class="cta">
+        <h2>Pronto para proteger seu carro?</h2>
+        <p>Escolha o tipo de seguro e fale com um corretor. Respondemos em até 2 horas úteis.</p>
+        <button class="btn btn-light" data-open-form data-type="auto">Começar minha cotação</button>
+        <small>Carrera Seguros · 26 anos no mercado automotivo</small>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="wrap">
+      <div class="foot-grid">
+        <div>
+          <div class="logo" style="color:#fff"><span class="logo-mark">C</span><span class="logo-name" style="color:#fff">Carrera<small style="color:rgba(255,255,255,.7)">SEGUROS</small></span></div>
+          <p style="margin-top:16px">Corretora de seguros do Grupo Carrera. Especialistas em seguro automotivo e ramos elementares há 26 anos.</p>
+        </div>
+        <div><h4>Seguros</h4><ul><li><a href="#seguro-auto">Seguro auto</a></li><li><a href="#alem">Utilitários e frota</a></li><li><a href="#alem">Vida e residencial</a></li><li><a href="#alem">Saúde e odonto</a></li></ul></div>
+        <div><h4>Institucional</h4><ul><li><a href="#">Quem somos</a></li><li><a href="#">Novidades</a></li><li><a href="#">Política de privacidade</a></li><li><a href="#grupo">Grupo Carrera</a></li></ul></div>
+        <div><h4>Atendimento</h4><ul><li><a href="#">WhatsApp</a></li><li><a href="#">Telefone</a></li><li><a href="#">E-mail</a></li><li><a href="#">Fale conosco</a></li></ul></div>
+      </div>
+      <div class="legal">Carrera Seguros · Corretora de seguros do Grupo Carrera · CNPJ 04.013.034/0001-71 · © 2026 Carrera Seguros. Todos os direitos reservados.</div>
+    </div>
+  </footer>
+</main>
+
+<!-- MODO 2: DIAGNÓSTICO -->
+<main class="view" id="view-diag">
+  <section class="dx-head">
+    <div class="wrap">
+      <span class="eyebrow">Diagnóstico · leitura de 19 de novembro de 2026</span>
+      <h1>O que encontramos no site atual</h1>
+      <p>Uma leitura feita em 04/11 e conferida em 19/11/2026. Nada aqui é opinião de gosto: são fatos que podem ser verificados no código e no comportamento do site.</p>
+      <div class="kpis">
+        <div class="kpi"><b>15</b><span>achados técnicos</span><small>contagem total da leitura</small></div>
+        <div class="kpi crit"><b>5</b><span>pontos críticos</span><small>afetam segurança ou busca</small></div>
+        <div class="kpi ok"><b>1</b><span>corrigido desde 04/11</span><small>certificado renovado</small></div>
+        <div class="kpi"><b>14</b><span>seguem abertos</span><small>com correção mapeada</small></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap">
+      <div class="fx">
+        <div class="card"><span class="tagline t-crit">Crítico</span><h3>O site já ficou fora do ar uma vez</h3><p>Em 12 de novembro o certificado de segurança venceu de madrugada e o site ficou cerca de 15 horas fora do ar. O certificado novo já está instalado, mas vence de novo em 10 de fevereiro de 2027. Sem renovação automática e sem alerta antes do vencimento, o mesmo problema volta na mesma data.</p></div>
+        <div class="card"><span class="tagline t-crit">Crítico</span><h3>O site fala mais de política do que de seguro</h3><p>A política de privacidade está escrita dentro do código de todas as páginas. Na home, são 6.029 palavras de política em um total de 6.534. Para quem lê a página como um buscador lê, o site é praticamente um texto sobre proteção de dados, e o seguro fica com menos de 10% do conteúdo.</p></div>
+        <div class="card"><span class="tagline t-crit">Crítico</span><h3>Todas as páginas se apresentam do mesmo jeito</h3><p>O nome da página, aquele que aparece na aba do navegador e no resultado do Google, é 'Carrera Seguros' em todas elas, e nenhuma tem um resumo próprio. A home não tem título principal, e as páginas de produto usam uma palavra só, como 'Passeio' e 'Vida'. Para o buscador, são páginas parecidas que não dizem o que vendem.</p></div>
+        <div class="card"><span class="tagline t-warn">Atenção</span><h3>Falta conteúdo para explicar o produto</h3><p>A página do Seguro Auto tem 206 palavras. A de Vida tem 358. Não há informação suficiente sobre preço, cobertura, franquia ou sinistro para que o Google responda uma dúvida, e muito menos para que uma IA cite a Carrera como fonte.</p></div>
+        <div class="card"><span class="tagline t-warn">Atenção</span><h3>Algumas informações não conferem</h3><p>O site diz 'mais de 20 anos' quando a empresa tem 26. O rodapé ainda mostra copyright de 2021. A lista de marcas parceiras inclui uma que não faz mais parte do portfólio. O CNPJ aparece escrito fora do formato oficial. E há erros de digitação repetidos, como 'seguimento automotivo' e 'Horario'. Em assunto de seguro, esse tipo de detalhe pesa contra.</p></div>
+        <div class="card"><span class="tagline t-crit">Crítico</span><h3>Existem atalhos quebrados</h3><p>O botão 'Saiba mais' da home levava para um ambiente de testes, fora do site oficial. O mapa do site não existe, então o buscador precisa adivinhar a estrutura. O arquivo que as IAs consultam também não existe. A ficha da empresa que o Google lê está com um tipo que não é reconhecido. E o endereço com www e sem www aparecem como dois sites diferentes.</p></div>
+        <div class="card"><span class="tagline t-warn">Atenção</span><h3>A marca não era encontrada pelo próprio nome</h3><p>Em teste feito em 04/11, buscar 'Carrera Seguros corretora site' no Google não trazia o site entre os resultados. Quem já conhece a marca e procura por ela não encontrava.</p></div>
+        <div class="card"><span class="tagline t-warn">Atenção</span><h3>A experiência não ajuda a decidir</h3><p>Os 16 seguros aparecem todos no mesmo nível, sem indicação de por onde começar. Quem acabou de comprar um carro no grupo não vê o seguro auto como caminho natural. E o formulário do Seguro Auto pedia 9 campos, incluindo CPF e data de nascimento, já no primeiro contato, o que afasta quem ainda está só comparando.</p></div>
+      </div>
+
+      <div class="closing">
+        <h3>O que isso significa na prática</h3>
+        <ul>
+          <li>O site tem estrutura para vender, mas hoje não se apresenta como uma corretora de seguro.</li>
+          <li>Nenhum desses pontos é questão de gosto visual. Todos são corrigíveis.</li>
+          <li>A nova estrutura resolve por ordem e por prova de confiança, não por estética.</li>
+        </ul>
+        <button class="btn btn-primary" data-go="site">Ver o novo site</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Lightbox -->
+<div class="lb" id="lightbox" role="presentation">
+  <div class="lb-card" role="dialog" aria-modal="true" aria-labelledby="lbTitle">
+    <button class="lb-close" id="lbClose" aria-label="Fechar">×</button>
+    <div id="lbForm">
+      <h2 id="lbTitle">Peça sua cotação</h2>
+      <p>Respondemos em até 2 horas úteis, de segunda a sexta</p>
+      <form id="quoteForm" novalidate>
+        <div class="field">
+          <label for="fType">Tipo de seguro</label>
+          <select id="fType" required>
+            <option value="">Selecione o tipo de seguro</option>
+            <optgroup label="Veículos">
+              <option value="auto">Auto</option><option value="utilitario">Utilitários</option><option value="moto">Moto</option><option value="aplicativo">Aplicativo / Táxi</option><option value="carga">Carga</option>
+            </optgroup>
+            <optgroup label="Pessoais e família">
+              <option value="vida">Vida</option><option value="residencial">Residencial</option><option value="saude">Saúde</option><option value="odonto">Odonto</option><option value="pet">PET</option><option value="celular">Celular</option>
+            </optgroup>
+            <optgroup label="Empresarial">
+              <option value="empresarial">Empresarial</option><option value="frota">Frota</option><option value="viagem">Viagem</option><option value="eventos">Eventos</option><option value="eletronicos">Eletrônicos</option><option value="aluguel">Aluguel</option>
+            </optgroup>
+          </select>
+          <div class="help">Escolha o produto que você quer cotar.</div>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="fName">Nome</label><input id="fName" type="text" required autocomplete="name" placeholder="Seu nome completo"></div>
+          <div class="field"><label for="fPhone">WhatsApp</label><input id="fPhone" type="tel" required autocomplete="tel" placeholder="(11) 99999-9999"><div class="help">Usamos para enviar o comparativo.</div></div>
+        </div>
+        <div class="field"><label for="fMail">E-mail</label><input id="fMail" type="email" autocomplete="email" placeholder="voce@exemplo.com.br"></div>
+        <label class="check"><input type="checkbox" id="fPrivacy" required> <span>Li e aceito a Política de Privacidade e autorizo o Carrera Seguros a entrar em contato sobre este pedido.</span></label>
+        <button type="submit" class="btn btn-primary btn-full">Solicitar cotação</button>
+      </form>
+    </div>
+    <div id="lbDone" class="success" hidden>
+      <div class="ring"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></div>
+      <h3>Pedido registrado</h3>
+      <p>Um corretor entra em contato pelo WhatsApp informado. Este é um protótipo de demonstração, nenhum dado foi enviado.</p>
+      <button class="btn btn-primary" id="lbDoneClose">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Floating dock -->
+<div class="dock" role="region" aria-label="Controles de apresentação">
+  <span class="lbl">Modo apresentação</span>
+  <button class="switch" id="toggleDefs" role="switch" aria-checked="true" aria-label="Mostrar marcadores de defesa"></button>
+  <span class="hint" id="dockHint">Passe o mouse nos números para ver a defesa de cada bloco.</span>
+</div>
+
+<script>
+(function(){
+  var views={site:document.getElementById('view-site'),diag:document.getElementById('view-diag')};
+  var current='site';
+
+  function showView(name, target){
+    if(name===current && !target){window.scrollTo({top:0,behavior:'smooth'});return;}
+    var from=views[current], to=views[name];
+    from.classList.remove('active');
+    to.classList.add('active');
+    current=name;
+    window.scrollTo({top:0,behavior:'smooth'});
+    if(target){
+      setTimeout(function(){
+        var el=document.getElementById(target);
+        if(el){el.scrollIntoView({behavior:'smooth',block:'start'});}
+      },120);
+    }
+    document.getElementById('mainNav').classList.remove('open');
+    document.getElementById('menuBtn').setAttribute('aria-expanded','false');
+  }
+
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('[data-go]');
+    if(a){
+      e.preventDefault();
+      var t=a.getAttribute('data-target');
+      showView(a.getAttribute('data-go')==='diag'?'diag':'site', t);
+    }
+  });
+
+  document.getElementById('menuBtn').addEventListener('click',function(){
+    var nav=document.getElementById('mainNav');
+    var open=nav.classList.toggle('open');
+    this.setAttribute('aria-expanded',open?'true':'false');
+  });
+
+  var DEF_CLOSE_DELAY=180;
+  var wraps=document.querySelectorAll('[data-mw]');
+  var isTouch=window.matchMedia('(hover: none)').matches;
+
+  function closeAll(except){
+    wraps.forEach(function(w){
+      if(w===except) return;
+      w.classList.remove('is-open');
+      var t=w.querySelector('.dtip'); if(t) t.classList.remove('is-open');
+      var b=w.querySelector('.dmark'); if(b) b.setAttribute('aria-expanded','false');
+    });
+  }
+  function openW(w){
+    if(w._t){clearTimeout(w._t);w._t=null;}
+    closeAll(w);
+    w.classList.add('is-open');
+    var t=w.querySelector('.dtip');
+    t.classList.add('is-open');
+    w.querySelector('.dmark').setAttribute('aria-expanded','true');
+    placeTip(t);
+  }
+  function closeW(w){
+    if(w._t){clearTimeout(w._t);}
+    w._t=setTimeout(function(){
+      w.classList.remove('is-open');
+      var t=w.querySelector('.dtip'); t.classList.remove('is-open');
+      w.querySelector('.dmark').setAttribute('aria-expanded','false');
+      w._t=null;
+    },DEF_CLOSE_DELAY);
+  }
+  function placeTip(t){
+    t.style.left='50%';
+    t.style.transform='translateX(-50%)';
+    var r=t.getBoundingClientRect();
+    var shift=0;
+    if(r.right>window.innerWidth-12) shift=window.innerWidth-12-r.right;
+    if(r.left<12) shift=12-r.left;
+    t.style.transform='translateX(calc(-50% + '+shift+'px))';
+  }
+
+  wraps.forEach(function(w){
+    var btn=w.querySelector('.dmark');
+    w.addEventListener('mouseenter',function(){ if(!isTouch) openW(w); });
+    w.addEventListener('mouseleave',function(){ if(!isTouch) closeW(w); });
+    btn.addEventListener('focus',function(){ openW(w); });
+    btn.addEventListener('blur',function(){ closeW(w); });
+    btn.addEventListener('keydown',function(e){
+      if(e.key==='Enter'||e.key===' '){
+        e.preventDefault();
+        w.classList.contains('is-open')?closeW(w):openW(w);
+      }
+      if(e.key==='Escape'){ closeAll(); btn.blur(); }
+    });
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      if(w.classList.contains('is-open')){ closeAll(); }
+      else { openW(w); }
+    });
+  });
+  document.addEventListener('click',function(){ closeAll(); });
+  window.addEventListener('resize',function(){
+    var open=document.querySelector('[data-mw].is-open');
+    if(open) placeTip(open.querySelector('.dtip'));
+  });
+
+  /* Toggle marks */
+  var sw=document.getElementById('toggleDefs');
+  var hint=document.getElementById('dockHint');
+  sw.addEventListener('click',function(){
+    var on=sw.getAttribute('aria-checked')!=='true';
+    sw.setAttribute('aria-checked',on?'true':'false');
+    document.querySelectorAll('[data-mw]').forEach(function(w){
+      w.classList.toggle('hidden-mode',!on);
+      var m=w.querySelector('.dmark');
+      if(!on){m.setAttribute('tabindex','-1');}else{m.removeAttribute('tabindex');}
+    });
+    document.querySelectorAll('[data-mw]').forEach(function(w){ w.classList.remove('is-open'); w.querySelector('.dtip').classList.remove('is-open'); });
+    hint.classList.toggle('off',!on);
+  });
+
+  /* Lightbox */
+  var lb=document.getElementById('lightbox');
+  var form=document.getElementById('quoteForm');
+  var fType=document.getElementById('fType');
+  var lbForm=document.getElementById('lbForm');
+  var lbDone=document.getElementById('lbDone');
+  var lastFocus=null;
+
+  function openForm(type){
+    lastFocus=document.activeElement;
+    fType.value=type||'';
+    lbForm.hidden=false;
+    lbDone.hidden=true;
+    form.reset();
+    fType.value=type||'';
+    lb.classList.add('open');
+    document.body.style.overflow='hidden';
+    setTimeout(function(){fType.focus();},60);
+  }
+  function closeForm(){
+    lb.classList.remove('open');
+    document.body.style.overflow='';
+    if(lastFocus) lastFocus.focus();
+  }
+  document.querySelectorAll('[data-open-form]').forEach(function(el){
+    el.addEventListener('click',function(e){
+      e.preventDefault();
+      openForm(el.getAttribute('data-type'));
+    });
+  });
+  document.getElementById('lbClose').addEventListener('click',closeForm);
+  lb.addEventListener('click',function(e){if(e.target===lb)closeForm();});
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){
+      if(lb.classList.contains('open')) closeForm();
+      document.querySelectorAll('[data-mw]').forEach(function(w){ w.classList.remove('is-open'); w.querySelector('.dtip').classList.remove('is-open'); });
+      document.getElementById('mainNav').classList.remove('open');
+    }
+  });
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var ok=true;
+    [fType,document.getElementById('fName'),document.getElementById('fPhone'),document.getElementById('fPrivacy')].forEach(function(f){
+      var valid=f.type==='checkbox'?f.checked:(f.value.trim()!=='');
+      if(!valid){ok=false;f.setAttribute('aria-invalid','true');}else{f.removeAttribute('aria-invalid');}
+    });
+    if(!ok){
+      if(window.skipUI && skipUI.toast) skipUI.toast('Preencha os campos obrigatórios para continuar.',{type:'error'});
+      return;
+    }
+    lbForm.hidden=true;
+    lbDone.hidden=false;
+    if(window.skipUI && skipUI.toast) skipUI.toast('Pedido registrado (demonstração).',{type:'success'});
+  });
+  document.getElementById('lbDoneClose').addEventListener('click',closeForm);
+})();
+</script>
+</body>
+</html>
